@@ -65,7 +65,7 @@ module Fog
           {
             :name    => nic.deviceInfo.label,
             :mac     => nic.macAddress,
-            :network => nic.backing.respond_to?("network") ? nic.backing.network.name : nic.backing.port.portgroupKey,
+	    :network => nic.backing.respond_to?("network") ? nic.backing.network.name : (nic.backing.respond_to?("port") ? nic.backing.port.portgroupKey : nic.backing),
             :status  => nic.connectable.status,
             :summary => nic.deviceInfo.summary,
             :type    => nic.class,

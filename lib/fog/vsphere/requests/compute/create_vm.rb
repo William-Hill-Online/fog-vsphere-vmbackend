@@ -180,6 +180,11 @@ module Fog
                 :switchUuid   => raw_network.config.distributedVirtualSwitch.uuid
               )
             )
+          elsif raw_network.is_a? RbVmomi::VIM::OpaqueNetwork
+            RbVmomi::VIM.VirtualEthernetCardOpaqueNetworkBackingInfo(
+              opaqueNetworkType: raw_network.summary.opaqueNetworkType,
+              opaqueNetworkId: raw_network.summary.opaqueNetworkId
+            )
           else
             RbVmomi::VIM.VirtualEthernetCardNetworkBackingInfo(:deviceName => nic.network)
           end

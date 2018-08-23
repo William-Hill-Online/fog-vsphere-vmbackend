@@ -40,11 +40,11 @@ module Fog
             nil
           end
         end
-        
+
         def get_raw_interfaces(vm_id, datacenter = nil)
           get_vm_ref(vm_id, datacenter).config.hardware.device.grep(RbVmomi::VIM::VirtualEthernetCard)
         end
-        
+
         def get_raw_interface(vm_id, options={})
           raise ArgumentError, "instance id is a required parameter" unless vm_id
           if options.is_a? Fog::Compute::Vsphere::Interface
@@ -58,23 +58,23 @@ module Fog
             end
           end
         end
-        
+
         private
-        
+
         def raw_to_hash(nic)
           {
             :name    => nic.deviceInfo.label,
             :mac     => nic.macAddress,
-	    :network => nic.backing.respond_to?("network") ? nic.backing.network.name : (nic.backing.respond_to?("port") ? nic.backing.port.portgroupKey : nic.backing),
+	          :network => nic.backing.respond_to?("network") ? nic.backing.network.name : (nic.backing.respond_to?("port") ? nic.backing.port.portgroupKey : nic.backing.opaqueNetworkId),
             :status  => nic.connectable.status,
             :summary => nic.deviceInfo.summary,
             :type    => nic.class,
             :key     => nic.key,
           }
         end
-        
+
       end
-      
+
       class Mock
         def list_vm_interfaces(vm_id)
         end

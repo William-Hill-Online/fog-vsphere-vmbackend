@@ -64,7 +64,7 @@ module Fog
         #   * 'numCoresPerSocket'<~Integer> - the number of cores per socket of the Destination VM
         #   * 'memoryMB'<~Integer> - the size of memory of the Destination VM in MB
         #   * customization_spec<~Hash>: Options are marked as required if you
-        #     use this customization_spec. 
+        #     use this customization_spec.
         #     As defined https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.Specification.html
         #     * encryptionKey <~array of bytes> Used to encrypt/decrypt password
         #     * globalIPSettings expects a hash, REQUIRED
@@ -72,7 +72,7 @@ module Fog
         #     * nicSettingMap expects an array
         #     * options expects a hash
         #     * All options can be parsed using a yaml template with cloudinit_to_customspec.rb
-        #      
+        #
         #     OLD Values still supported:
         #     This only support cloning and setting DHCP on the first interface
         #     * 'domain'<~String> - *REQUIRED* This is put into
@@ -191,10 +191,10 @@ module Fog
           #   *       password: <~Hash> - REQUIRED, new administrator password for the machine
           #   *         plainText: boolean - REQUIRED, specify whether or not the password is in plain text, rather than encrypted
           #   *         value: <~String> - REQUIRED, password string
-          #   *       timeZone: <~int> - REQUIRED, (see here for values https://msdn.microsoft.com/en-us/library/ms912391(v=winembedded.11).aspx)    
+          #   *       timeZone: <~int> - REQUIRED, (see here for values https://msdn.microsoft.com/en-us/library/ms912391(v=winembedded.11).aspx)
           #   *     identification: <~Hash> - REQUIRED, representation of the sysprep Identification key
           #   *       domainAdmin: <~String> - Optional, domain user account used for authentication if the virtual machine is joining a domain
-          #   *       domainAdminPassword: <~Hash> - Optional, password for the domain user account used for authentication 
+          #   *       domainAdminPassword: <~Hash> - Optional, password for the domain user account used for authentication
           #   *         plainText: boolean - REQUIRED, specify whether or not the password is in plain text, rather than encrypted
           #   *         value: <~String> - REQUIRED, password string
           #   *       joinDomain: <~String> - Optional, The domain that the virtual machine should join. If this value is supplied, then domainAdmin and domainAdminPassword must also be supplied
@@ -213,7 +213,7 @@ module Fog
           #   *     hwClockUTC: <~Boolean> - Optional, Specifies whether the hardware clock is in UTC or local time
           #   *     timeZone: <~String> - Optional, Case sensistive timezone, valid values can be found at https://pubs.vmware.com/vsphere-51/topic/com.vmware.wssdk.apiref.doc/timezone.html
           #   *   SysprepText: <~Hash> - Optional, alternate way to specify the sysprep.inf answer file.
-          #   *     value: <~String> - REQUIRED, Text for the sysprep.inf answer file. 
+          #   *     value: <~String> - REQUIRED, Text for the sysprep.inf answer file.
           #   * nicSettingMap: <~Array> - Optional, IP settings that are specific to a particular virtual network adapter
           #   *   Each item in array:
           #   *   adapter: <~Hash> - REQUIRED, IP settings for the associated virtual network adapter
@@ -254,15 +254,15 @@ module Fog
               cust_hostname = custom_spec['hostname'] || options['name']
               custom_spec['identity'] = Hash.new unless custom_spec.key?('identity')
               custom_spec['identity']['LinuxPrep'] = {"domain" => custom_spec['domain'], "hostName" => cust_hostname, "timeZone" => custom_spec['time_zone']}
-            
+
               if custom_spec.key?('ipsettings')
                 custom_spec['globalIPSettings']=Hash.new unless custom_spec.key?('globalIPSettings')
                 custom_spec['globalIPSettings']['dnsServerList'] = custom_spec['ipsettings']['dnsServerList'] if custom_spec['ipsettings'].key?('dnsServerList')
                 custom_spec['globalIPSettings']['dnsSuffixList'] = custom_spec['dnsSuffixList'] || [custom_spec['domain']] if ( custom_spec['dnsSuffixList'] || custom_spec['domain'])
               end
-        
+
               if (custom_spec['ipsettings'].key?('ip') or custom_spec['ipsettings'].key?('gateway') or custom_spec['ipsettings'].key?('subnetMask') or custom_spec['ipsettings'].key?('domain') or custom_spec['ipsettings'].key?('dnsServerList'))
-                if custom_spec['ipsettings'].key?('ip') 
+                if custom_spec['ipsettings'].key?('ip')
                   raise ArgumentError, "subnetMask is required for static ip" unless custom_spec["ipsettings"].key?("subnetMask")
                 end
                 custom_spec['nicSettingMap']=Array.new unless custom_spec.key?('nicSettingMap')
@@ -273,24 +273,24 @@ module Fog
                 custom_spec['nicSettingMap'][0]['adapter']['subnetMask'] = custom_spec['ipsettings']['subnetMask'] if custom_spec['ipsettings'].key?('subnetMask')
                 custom_spec['nicSettingMap'][0]['adapter']['dnsDomain'] = custom_spec['ipsettings']['domain'] if custom_spec['ipsettings'].key?('domain')
                 custom_spec['nicSettingMap'][0]['adapter']['dnsServerList'] = custom_spec['ipsettings']['dnsServerList'] if custom_spec['ipsettings'].key?('dnsServerList')
-              end       
+              end
             end
-            ### End of backwards compatability 
+            ### End of backwards compatability
 
             ## requirements check here ##
             raise ArgumentError, "globalIPSettings are required when using Customization Spec" unless custom_spec.key?('globalIPSettings')
             raise ArgumentError, "identity is required when using Customization Spec" unless custom_spec.key?('identity')
-          
+
             # encryptionKey
             custom_encryptionKey = custom_spec['encryptionKey'] if custom_spec.key?('encryptionKey')
             custom_encryptionKey ||= nil
-            
+
             # globalIPSettings
             # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.GlobalIPSettings.html
             custom_globalIPSettings = RbVmomi::VIM::CustomizationGlobalIPSettings.new()
             custom_globalIPSettings.dnsServerList = custom_spec['globalIPSettings']['dnsServerList'] if custom_spec['globalIPSettings'].key?("dnsServerList")
             custom_globalIPSettings.dnsSuffixList = custom_spec['globalIPSettings']['dnsSuffixList'] if custom_spec['globalIPSettings'].key?("dnsSuffixList")
-            
+
             # identity
             # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.IdentitySettings.html
             # Accepts the 3 supported CustomizationIdentitySettings Types:
@@ -306,14 +306,14 @@ module Fog
               #   * domain: string **REQUIRED**
               #   * hostName: string (CustomizationName)  **REQUIRED** Will use options['name'] if not provided.
               #   * hwClockUTC: boolean
-              #   * timeZone: string (https://pubs.vmware.com/vsphere-55/topic/com.vmware.wssdk.apiref.doc/timezone.html) 
+              #   * timeZone: string (https://pubs.vmware.com/vsphere-55/topic/com.vmware.wssdk.apiref.doc/timezone.html)
               raise ArgumentError, "domain is required when using LinuxPrep identity" unless identity['LinuxPrep'].key?('domain')
               custom_identity = RbVmomi::VIM::CustomizationLinuxPrep(:domain => identity['LinuxPrep']['domain'])
               cust_hostname = RbVmomi::VIM::CustomizationFixedName(:name => identity['LinuxPrep']['hostName']) if identity['LinuxPrep'].key?('hostName')
               cust_hostname ||= RbVmomi::VIM::CustomizationFixedName(:name => options['name'])
               custom_identity.hostName = cust_hostname
               custom_identity.hwClockUTC = identity['LinuxPrep']['hwClockUTC'] if identity['LinuxPrep'].key?('hwClockUTC')
-              custom_identity.timeZone = identity['LinuxPrep']['timeZone'] if identity['LinuxPrep'].key?('timeZone') 
+              custom_identity.timeZone = identity['LinuxPrep']['timeZone'] if identity['LinuxPrep'].key?('timeZone')
             elsif identity.key?("Sysprep")
               # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.Sysprep.html
               # Fields:
@@ -322,7 +322,7 @@ module Fog
               #   * identification: CustomizationIdentification  **REQUIRED**
               #   * licenseFilePrintData: CustomizationLicenseFilePrintData
               #   * userData: CustomizationUserData **REQUIRED**
-              # 
+              #
               raise ArgumentError, "guiUnattended is required when using Sysprep identity" unless identity['Sysprep'].key?('guiUnattended')
               raise ArgumentError, "identification is required when using Sysprep identity" unless identity['Sysprep'].key?('identification')
               raise ArgumentError, "userData is required when using Sysprep identity" unless identity['Sysprep'].key?('userData')
@@ -339,7 +339,7 @@ module Fog
               #   * autoLogin: boolean **REQUIRED**
               #   * autoLogonCount: int **REQUIRED**
               #   * timeZone: int (see here for values https://msdn.microsoft.com/en-us/library/ms912391(v=winembedded.11).aspx) **REQUIRED**
-              #   * password: CustomizationPassword 
+              #   * password: CustomizationPassword
               raise ArgumentError, "guiUnattended->autoLogon is required when using Sysprep identity" unless identity['Sysprep']['guiUnattended'].key?('autoLogon')
               raise ArgumentError, "guiUnattended->autoLogonCount is required when using Sysprep identity" unless identity['Sysprep']['guiUnattended'].key?('autoLogonCount')
               raise ArgumentError, "guiUnattended->timeZone is required when using Sysprep identity" unless identity['Sysprep']['guiUnattended'].key?('timeZone')
@@ -380,7 +380,7 @@ module Fog
                 # Fields:
                 #   * plainText: boolean **REQUIRED**
                 #   * value: string **REQUIRED**
-                custom_identification.domainAdminPassword = RbVmomi::VIM.CustomizationPassword( 
+                custom_identification.domainAdminPassword = RbVmomi::VIM.CustomizationPassword(
                   :plainText => identity['Sysprep']['identification']['domainAdminPassword']['plainText'],
                   :value => identity['Sysprep']['identification']['domainAdminPassword']['value']
                 )
@@ -418,7 +418,7 @@ module Fog
                 :computerName => RbVmomi::VIM.CustomizationFixedName(:name => identity['Sysprep']['userData']['computerName'])
               )
 
-              custom_identity = RbVmomi::VIM::CustomizationSysprep(          
+              custom_identity = RbVmomi::VIM::CustomizationSysprep(
                 :guiUnattended => custom_guiUnattended,
                 :identification => custom_identification,
                 :userData => custom_userData
@@ -445,8 +445,8 @@ module Fog
               #   * macAddress: string
               raise ArgumentError, "At least one nicSettingMap is required when using nicSettingMap" unless custom_spec['nicSettingMap'].length > 0
               raise ArgumentError, "Adapter is required when using nicSettingMap" unless custom_spec['nicSettingMap'][0].key?('adapter')
-              
-              custom_nicSettingMap = [] 
+
+              custom_nicSettingMap = []
               # need to go through array here for each apapter
               custom_spec['nicSettingMap'].each do | nic |
                 # https://pubs.vmware.com/vsphere-55/index.jsp?topic=%2Fcom.vmware.wssdk.apiref.doc%2Fvim.vm.customization.IPSettings.html
@@ -501,17 +501,17 @@ module Fog
                 custom_adapter.primaryWINS = nic['adapter']['primaryWINS'] if nic['adapter'].key?('primaryWINS')
                 custom_adapter.secondaryWINS = nic['adapter']['secondaryWINS'] if nic['adapter'].key?('secondaryWINS')
                 custom_adapter.subnetMask = nic['adapter']['subnetMask'] if nic['adapter'].key?('subnetMask')
-                
+
                 custom_adapter_mapping = RbVmomi::VIM::CustomizationAdapterMapping(:adapter => custom_adapter)
                 custom_adapter_mapping.macAddress = nic['macAddress'] if nic.key?('macAddress')
-                
+
                 # build the adapters array, creates it if not already created, otherwise appends to it
-                custom_nicSettingMap << custom_adapter_mapping 
+                custom_nicSettingMap << custom_adapter_mapping
               end
-            end  
+            end
             custom_nicSettingMap = nil if custom_nicSettingMap.length < 1
-                      
-            if custom_spec.key?("options") 
+
+            if custom_spec.key?("options")
               # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.Options.html
               # this currently doesn't have any Linux options, just windows
               # Fields:
@@ -529,8 +529,8 @@ module Fog
                 custom_options.reboot = RBVmomi::VIM.CustomizationSysprepRebootOption(custom_spec['options']['reboot'])
               end
             end
-            custom_options ||=nil  
-            
+            custom_options ||=nil
+
             # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.Specification.html
             customization_spec = RbVmomi::VIM::CustomizationSpec(
               :globalIPSettings => custom_globalIPSettings,
@@ -674,11 +674,16 @@ module Fog
             if ( network.kind_of? RbVmomi::VIM::DistributedVirtualPortgroup)
                 # Create the NIC backing for the distributed virtual portgroup
                 nic_backing_info = RbVmomi::VIM::VirtualEthernetCardDistributedVirtualPortBackingInfo(
-                    :port => RbVmomi::VIM::DistributedVirtualSwitchPortConnection( 
+                    :port => RbVmomi::VIM::DistributedVirtualSwitchPortConnection(
                                                                                   :portgroupKey => network.key,
                                                                                   :switchUuid => network.config.distributedVirtualSwitch.uuid
-                                                                                 ) 
+                                                                                 )
                 )
+            elsif network.kind_of? RbVmomi::VIM::OpaqueNetwork
+              nic_backing_info = RbVmomi::VIM.VirtualEthernetCardOpaqueNetworkBackingInfo(
+                opaqueNetworkType: network.summary.opaqueNetworkType,
+                opaqueNetworkId: network.summary.opaqueNetworkId
+              )
             else
                 # Otherwise it's a non distributed port group
                 nic_backing_info = RbVmomi::VIM::VirtualEthernetCardNetworkBackingInfo(:deviceName => network_label)
